@@ -62,7 +62,7 @@ def make_text(chains):
     total_char = len(words)
 
     # while loop to make sure text won't exceed character limit  
-    while total_char < 280:
+    while total_char < 250:
 
         len_words = sum(len(i) for i in words)
         spaces = len(words) - 1
@@ -79,8 +79,14 @@ def make_text(chains):
 
         # once we hit none, comes out of while loop
         else:
+            words.pop()
             break
+            # if total_char < 280:
+            #     break
+            # else:
+            #     words.pop()
 
+    print("character length is {}".format(total_char))
     return " ".join(words)
 
 def tweet(chains):
@@ -90,7 +96,15 @@ def tweet(chains):
     # Note: you must run `source secrets.sh` before running this file
     # to make sure these environmental variables are set.
 
-    pass
+    api = twitter.Api(
+        consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+        consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+        access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+        access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+    status = api.PostUpdate(chains)
+
+    print(status.text)
 
 
 # Get the filenames from the user through a command line prompt, ex:
@@ -119,10 +133,9 @@ def execute_functions(file_name):
     # Produce random text
     random_text = make_text(chains)
 
-    print(random_text)
+    tweet(random_text)
 
-
-execute_functions('green-eggs.txt')
+execute_functions('gettysburg.txt')
 
 
 
